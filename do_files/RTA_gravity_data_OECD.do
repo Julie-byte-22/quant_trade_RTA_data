@@ -89,17 +89,42 @@
 
 * Store the results
 		estimates store ols
+		
+					
+* Perform the RESET test
+                                predict fit, xb
+                                                generate fit2 = fit^2
+                                regress ln_trade EXPORTER_TIME_FE* IMPORTER_TIME_FE* ln_dist contig col comcol rta rta_data fit2 if iso3_i != iso3_j, cluster(pair_id)
+                                                test fit2 = 0
+                                                drop fit*
+
 
 * Estimate the gravity model with the PPML estimator and store the results
 		ppmlhdfe trade EXPORTER_TIME_FE* IMPORTER_TIME_FE* ln_dist contig col comcol rta rta_data if iso3_i != iso3_j, cluster(pair_id)
 			estimates store ppml
 			
+* Perform the RESET test
+                                predict fit, xb
+                                                generate fit2 = fit^2
+                                ppmlhdfe trade EXPORTER_TIME_FE* IMPORTER_TIME_FE* ln_dist contig col comcol rta rta_data fit2 if iso3_i != iso3_j, cluster(pair_id)
+                                                test fit2 = 0
+                                                drop fit*
+		
 ************** (b)	Addressing potential domestic trade diversion **************
 
 * Estimate the gravity model with the PPML estimator by considering
 * intra-national trade as well as international trade and store the results
 		ppmlhdfe trade EXPORTER_TIME_FE* IMPORTER_TIME_FE* ln_dist contig col comcol rta rta_data, cluster(pair_id)
 			estimates store ppml_intra
+			
+			
+* Perform the RESET test
+                                predict fit, xb
+                                                generate fit2 = fit^2
+                                ppmlhdfe trade EXPORTER_TIME_FE* IMPORTER_TIME_FE* ln_dist contig col comcol rta rta_data fit2, cluster(pair_id)
+                                                test fit2 = 0
+                                                drop fit*
+ 
 
 ***************** (c) Addressing potential endogeneity of RTAs *****************
 
